@@ -17,10 +17,13 @@ class TaskController extends Controller
         $this->middleware('auth');
     }
     public function index()
-    {
-        $tasks = Auth::user()->tasks()->latest()->get();
-        return view('tasks.index', compact('tasks'));
-    }
+{
+    dd(Auth::user());
+    // o
+    // dd(auth()->user());
+    $tasks = auth()->user()->tasks()->latest()->get();
+    return view('tasks.index', compact('tasks'));
+}
 
     public function create()
     {
@@ -28,16 +31,19 @@ class TaskController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'nullable',
-        ]);
+{
+    $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'nullable',
+    ]);
 
-        Auth::user()->tasks()->create($request->all());
+    Auth::user()->tasks()->create([
+        'title' => $request->title,
+        'description' => $request->description,
+    ]);
 
-        return redirect()->route('tasks.index')->with('success', 'Tarea creada.');
-    }
+    return redirect()->route('tasks.index')->with('success', 'Tarea creada exitosamente.');
+}
 
     /**
      * Display the specified resource.
